@@ -1,0 +1,101 @@
+{% load crispy_forms_tags %}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <title>Profile Search</title>
+    <style>
+      table,
+      th,
+      td {
+          border: 1px solid black;
+          text-align: center;
+      }
+      </style>
+  </head>
+  <body style="font-family: 'Poppins', sans-serif;">
+    <h1><center>Profile Search</center></h1>
+    {% if user.is_authenticated %}
+      Hi {{ user.username }}!
+      <a class="nav-link" href="{% url 'home'%}">Home</a>
+      <a href="/signout" class="btn btn-danger">Logout</a>
+      <br>
+      <br>
+      <br>
+    {% else %}
+      <a href="/signin" class="btn btn-primary"><span class="glyphicon glyphicon-log-in"></span>Login</a> 
+      <a href="/signup" class="btn btn-success">Signup</a>
+    {% endif %}
+    {% if validate %}
+<div class="validate" style="margin-top: 2%;">
+    {% for validate in validates %}
+    <div {% if validate.tags == 'error' %} class="alert alert-danger" {% else %} class="alert alert-{{ validate.tags }} "{% endif %}>
+        {% if validate.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ validate }}
+    </div>
+    {% endfor %}
+</div>
+    {% endif %}
+      {% if form %}
+      <div class="row">
+        <div class="col-lg-5 col-md-5"></div>
+        <div class="col-lg-6 col-md-6">
+          <form method="POST" enctype="multipart/form-data" action="{% url 'homepage' %}" style="margin-top: 2%; margin-bottom: 3%">
+            {% csrf_token %}
+            {{ form|crispy }}
+            
+            <button type="submit" id="import" name="import" class="btn btn-success" style="margin-top: 2%; border-radius: 0">Upload</button>
+            
+          </form>
+        </div>
+      </div>
+      {% elif resumes %}
+      
+            <a href="{% url 'homepage' %}">
+            <button style="margin-bottom: 10px; border-radius: 0;">Upload More PDF/Docx resumes</button>
+            </a>
+        </div>
+      </div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Resume File</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile Number</th>
+                <th>Education</th>
+                <th>Company Names</th>
+                <th>Designation</th>
+                <th>College Name</th>
+                <th>Total Experience in years</th>
+                <th>Skills</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for resume in resumes %}
+                <tr>
+                  <td>{{forloop.counter}}</td>
+                  <td><a href="{{resume.resume.url}}" target="_blank">{{resume.resume.url|truncatechars:20}}</a></td>
+                  <td>{{resume.name}}</td><br>
+                  <td>{{resume.email}}</td><br>
+                  <td>{{resume.mobile_number}}</td><br>
+                  <td>{{resume.education}}</td><br>
+                  <td>{{resume.company_names}}</td><br>
+                  <td>{{resume.designation}}</td><br>
+                  <td>{{resume.college_name}}</td><br>
+                  <td>{{resume.total_experience}}</td><br>
+                  <td>{{resume.skills}}</td><br>
+                  </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+      
+    </div>
+  
+  </body>
+</html>
+
